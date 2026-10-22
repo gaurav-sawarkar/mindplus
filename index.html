@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TERRAWATCH | Satellite-Based Disaster Detection & Impact Mapping</title>
+  <meta name="description" content="A professional disaster detection and impact mapping platform using satellite remote sensing for hypothetical flood, wildfire, and urban damage triage." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛰️</text></svg>" />
+</head>
+<body>
+
+  <!-- Dynamic Satellite Orbital Grid Canvas -->
+  <canvas id="starfieldCanvas"></canvas>
+  <div class="radar-vignette" aria-hidden="true"></div>
+
+  <!-- Top Satellite Telemetry Ticker -->
+  <aside class="live-telemetry-ticker" aria-label="Satellite Orbit Telemetry">
+    <div class="container ticker-content">
+      <div class="ticker-pulse">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span>EARTH OBSERVATION CONSTELLATION</span>
+      </div>
+      <div class="ticker-stats">
+        <div class="ticker-item">
+          <span class="ticker-label">Sentinel-1A:</span>
+          <strong>SAR C-Band (IW Mode) • 693 km</strong>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">Sentinel-2B:</span>
+          <strong>MSI Optical (10m) • 786 km</strong>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">Landsat-9:</span>
+          <strong>SWIR / Thermal • 705 km</strong>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">Constellation Revisit:</span>
+          <strong>~6.5 Hours Mean</strong>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">System Mode:</span>
+          <strong style="color: #facc15;">Hypothetical / Demonstration</strong>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Site Header & Navigation -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#dashboard" class="site-logo" aria-label="TerraWatch Home">
+        <div class="logo-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+        </div>
+        <span class="logo-text">TERRAWATCH</span>
+        <span class="logo-pill">DEMO PLATFORM</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="main-nav" aria-label="Main Navigation">
+        <a href="#dashboard" class="nav-link active" data-section="dashboard">Dashboard</a>
+        <a href="#analysis" class="nav-link" data-section="analysis">Analysis Studio</a>
+        <a href="#results" class="nav-link" data-section="results">Impact & Mapping</a>
+        <a href="#methodology" class="nav-link" data-section="methodology">Methodology & Science</a>
+      </nav>
+
+      <!-- Action Tools -->
+      <div class="header-actions">
+        <button id="soundToggleBtn" class="btn-header-tool" title="Toggle Tactical SFX" aria-label="Toggle Sound">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+            <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>
+          </svg>
+          <span>SFX Active</span>
+        </button>
+
+        <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Toggle Menu">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div id="mobileDrawer" class="mobile-drawer" aria-label="Mobile Navigation">
+    <a href="#dashboard" class="nav-link active" data-section="dashboard">📊 Dashboard & Incidents</a>
+    <a href="#analysis" class="nav-link" data-section="analysis">🔬 Analysis Studio & Upload</a>
+    <a href="#results" class="nav-link" data-section="results">🗺️ Impact & Before/After Mapping</a>
+    <a href="#methodology" class="nav-link" data-section="methodology">📚 Methodology & Science</a>
+  </div>
+
+  <main>
+    <!-- HERO / BANNER -->
+    <section class="hero-banner">
+      <div class="container">
+        <div class="prototype-disclaimer-pill">
+          <span>⚠️ DEMONSTRATION & HYPOTHETICAL ANALYSIS PROTOTYPE</span>
+          <span>•</span>
+          <span>HACKATHON EDITION</span>
+        </div>
+        <h1 class="hero-title">
+          SATELLITE-BASED DISASTER DETECTION <br />
+          <span class="gradient-text">& IMPACT MAPPING</span>
+        </h1>
+        <p class="hero-subtitle">
+          Rapid triage prototype for hypothetical floods, wildfires, and urban damage using simulated multi-spectral Earth observation satellite telemetry and change detection.
+        </p>
+
+        <div class="hero-stats-bar">
+          <div class="hero-stat-card">
+            <span id="statTotalIncidents" class="h-num">6</span>
+            <span class="h-lbl">Monitored Hazard Zones</span>
+          </div>
+          <div class="hero-stat-card">
+            <span id="statTotalArea" class="h-num">456.1 km²</span>
+            <span class="h-lbl">Total Detected Damage Area</span>
+          </div>
+          <div class="hero-stat-card">
+            <span id="statTotalDisplaced" class="h-num">~193,200</span>
+            <span class="h-lbl">Est. Population at Risk</span>
+          </div>
+          <div class="hero-stat-card">
+            <span class="h-num">4</span>
+            <span class="h-lbl">Sensor Constellations</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: DASHBOARD -->
+    <section id="dashboard" class="content-section active-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span>📊 Disaster Scenarios Dashboard</span>
+          </h2>
+          <p class="section-desc">
+            Explore active hypothetical disaster scenarios across flood inundation, wildfire fronts, and urban structural damage. Filter by hazard classification, severity level, and geographic territory.
+          </p>
+        </div>
+
+        <!-- Filter & Search Controls Bar -->
+        <div class="controls-bar">
+          <div class="search-box-wrap">
+            <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search scenarios by location, sensor platform, or hazard..." aria-label="Search scenarios" />
+            <span class="search-shortcut-hint">Ctrl + K</span>
+          </div>
+
+          <div class="filter-groups">
+            <div id="typeFilterGroup" class="filter-group"></div>
+            <div id="severityFilterGroup" class="filter-group"></div>
+            <select id="regionSelect" class="region-select" aria-label="Filter by Geographic Region">
+              <option value="all">All Regions</option>
+              <option value="Asia-Pacific">Asia-Pacific</option>
+              <option value="Europe">Europe</option>
+              <option value="North America">North America</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Scenarios Grid -->
+        <div id="scenariosGrid" class="scenarios-grid"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ANALYSIS STUDIO & UPLOAD -->
+    <section id="analysis" class="content-section hidden">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">🔬 Demonstration Analysis Studio</h2>
+          <p class="section-desc">
+            Upload custom satellite imagery or load a pre-configured disaster scene. Configure multi-spectral band thresholds and trigger simulated Earth observation AI inference.
+          </p>
+        </div>
+
+        <div class="studio-layout">
+          <!-- Left: Upload & Scene Selection -->
+          <div class="glass-card">
+            <div class="param-group" style="margin-bottom: 1.5rem;">
+              <label for="analysisPresetSelect">Option 1: Load Pre-Configured Disaster Scenario</label>
+              <select id="analysisPresetSelect" class="studio-select"></select>
+            </div>
+
+            <div style="text-align: center; margin: 1rem 0; color: var(--text-dim); font-family: var(--font-mono); font-size: 0.8rem;">
+              ── OR ──
+            </div>
+
+            <div class="param-group">
+              <label>Option 2: Upload Satellite Imagery for Demonstration Analysis</label>
+              <div id="fileDropZone" class="upload-drop-zone">
+                <input type="file" id="satelliteFileInput" accept="image/*" style="display: none;" />
+                <div class="upload-icon-pulse">🛰️</div>
+                <h4>Drag & Drop Satellite Scene or Click to Browse</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  Supports GeoTIFF previews, PNG, JPG, or simulated multi-spectral band composites.
+                </p>
+                <button class="btn btn-secondary btn-sm" type="button">Select Image File</button>
+              </div>
+
+              <!-- Upload Preview -->
+              <div id="uploadPreviewBox" class="upload-preview-box hidden">
+                <img id="uploadPreviewImg" class="upload-preview-img" alt="Uploaded Satellite Preview" />
+                <div id="uploadFileInfo" class="upload-file-info"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Parameters & Run Inference -->
+          <div class="glass-card studio-params-card">
+            <h3 style="font-size: 1.25rem;">Analysis Configuration</h3>
+            <p style="font-size: 0.85rem;">Fine-tune spectral thresholds for simulated anomaly extraction.</p>
+
+            <div class="param-group">
+              <label for="uploadTypeSelect">Target Hazard Classification</label>
+              <select id="uploadTypeSelect" class="studio-select">
+                <option value="Flood">Flood (NDWI / SAR Backscatter Drop)</option>
+                <option value="Wildfire">Wildfire (dNBR / SWIR Thermal Anomaly)</option>
+                <option value="Urban Damage">Urban Damage (VHR Texture & Morphological)</option>
+              </select>
+            </div>
+
+            <div class="param-group">
+              <label for="thresholdSlider">Spectral Detection Confidence Threshold: <strong id="thresholdVal">0.65</strong></label>
+              <div class="param-slider-row">
+                <input type="range" id="thresholdSlider" min="0.30" max="0.95" step="0.05" value="0.65" />
+              </div>
+              <small style="color: var(--text-dim); font-size: 0.75rem;">
+                Higher thresholds minimize false positives in dense cloud or shadow fringes.
+              </small>
+            </div>
+
+            <div class="param-group">
+              <label>Sensor Fusion Mode</label>
+              <div style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted);">
+                Dual-Band Optical (Sentinel-2) + C-Band SAR Co-Registration
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <button id="runAnalysisBtn" class="btn btn-primary" style="width: 100%;">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Run Multi-Spectral Disaster Inference &rarr;
+              </button>
+            </div>
+
+            <!-- Pipeline Status Card -->
+            <div id="analysisPipelineCard" class="pipeline-status-card hidden">
+              <div class="pipeline-header">
+                <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan);">AI INFERENCE PIPELINE</span>
+                <span class="live-dot" style="background: var(--accent-cyan);"></span>
+              </div>
+              <div class="pipeline-progress-track">
+                <div id="pipelineProgressBar" class="pipeline-progress-bar"></div>
+              </div>
+              <div id="pipelineStatusText" class="pipeline-status-text">Initializing pipeline...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: IMPACT RESULTS & BEFORE/AFTER MAPPING -->
+    <section id="results" class="content-section hidden">
+      <div class="container">
+        <!-- Results Header Card -->
+        <div class="glass-card results-header-card">
+          <div class="results-meta-row">
+            <div>
+              <span class="hazard-type-badge" style="margin-bottom: 0.4rem; display: inline-block;">ACTIVE INCIDENT</span>
+              <h2 id="resultsTitle" style="font-size: 1.6rem;">Brahmaputra Basin Monsoon Flash Inundation</h2>
+              <div id="resultsLocation" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-cyan);">
+                📍 Assam Valley, Northeast India (26.2006° N, 92.9376° E)
+              </div>
+            </div>
+            <div>
+              <button id="exportSitrepBtn" class="btn btn-secondary btn-sm">
+                📄 Export Situation Report (SITREP)
+              </button>
+            </div>
+          </div>
+
+          <div style="font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-glass); padding-top: 0.75rem;">
+            <strong>Sensor:</strong> <span id="resultsSensor">Sentinel-1 SAR C-Band + Sentinel-2 MSI</span> | 
+            <strong>Methodology:</strong> <span id="resultsMethod">SAR Amplitude Change Detection & NDWI</span>
+          </div>
+
+          <div class="results-metrics-grid">
+            <div class="result-metric-card">
+              <div id="resultsAreaSqKm" class="m-val">142.8 km²</div>
+              <div class="m-lbl">Detected Impact Area</div>
+            </div>
+            <div class="result-metric-card">
+              <div id="resultsHectares" class="m-val">14,280 ha</div>
+              <div class="m-lbl">Agricultural / Land Extent</div>
+            </div>
+            <div class="result-metric-card">
+              <div id="resultsDisplaced" class="m-val">~64,500</div>
+              <div class="m-lbl">Est. Population at Risk</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FEATURE 1: BEFORE & AFTER SLIDER -->
+        <div class="slider-wrapper-box glass-card">
+          <div class="slider-controls-bar">
+            <div>
+              <h3 style="font-size: 1.25rem;">Before & After Satellite Image Comparison</h3>
+              <p style="font-size: 0.85rem;">Drag the center slider left or right to compare pre-disaster baseline imagery with the post-disaster detected anomaly.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span id="sliderPctLabel" class="slider-pct-label">BEFORE: 50% | AFTER: 50%</span>
+              <button id="toggleMaskBtn" class="btn btn-outline-cyan btn-sm active">Damage Mask: ON</button>
+            </div>
+          </div>
+
+          <!-- Split Screen Stage Container -->
+          <div id="sliderContainer" class="slider-stage-container">
+            <!-- Layer 1: Before Image -->
+            <div class="slider-layer-before">
+              <canvas id="sliderBeforeCanvas" class="slider-canvas"></canvas>
+            </div>
+
+            <!-- Layer 2: After Image (clipped) -->
+            <div id="afterLayerWrap" class="slider-layer-after" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+              <canvas id="sliderAfterCanvas" class="slider-canvas"></canvas>
+            </div>
+
+            <!-- Divider Line with Grab Handle -->
+            <div id="sliderDivider" class="slider-divider-line">
+              <div class="slider-grab-handle">⇄</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FEATURE 2: INTERACTIVE GEOSPATIAL IMPACT MAP -->
+        <div class="glass-card" style="margin-bottom: 2.5rem;">
+          <div class="section-header" style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.3rem;">Disaster Impact Map & Infrastructure Overlay</h3>
+            <p style="font-size: 0.85rem;">Interactive map with layer controls, affected transport networks, and critical facility markers.</p>
+          </div>
+
+          <div class="map-layout-grid">
+            <!-- Map Canvas with Zoom Toolbar -->
+            <div class="impact-map-container">
+              <canvas id="impactMapCanvas"></canvas>
+
+              <div class="map-zoom-toolbar">
+                <button id="mapZoomInBtn" class="map-zoom-btn" title="Zoom In">+</button>
+                <button id="mapZoomOutBtn" class="map-zoom-btn" title="Zoom Out">-</button>
+                <button id="mapZoomResetBtn" class="map-zoom-btn" title="Reset View" style="font-size: 0.75rem;">↺</button>
+              </div>
+            </div>
+
+            <!-- Map Controls & Legend Panel -->
+            <div class="map-layers-panel">
+              <h4 style="font-size: 0.95rem; text-transform: uppercase; font-family: var(--font-mono); color: var(--accent-cyan);">Geospatial Layers</h4>
+              <div class="layer-toggle-list">
+                <label class="layer-item">
+                  <input type="checkbox" class="layer-checkbox" data-layer="satellite" checked />
+                  <span>Satellite Base Imagery</span>
+                </label>
+                <label class="layer-item">
+                  <input type="checkbox" class="layer-checkbox" data-layer="damageMask" checked />
+                  <span>Detected Inundation / Burn Mask</span>
+                </label>
+                <label class="layer-item">
+                  <input type="checkbox" class="layer-checkbox" data-layer="infrastructure" checked />
+                  <span>Critical Infrastructure Pins</span>
+                </label>
+                <label class="layer-item">
+                  <input type="checkbox" class="layer-checkbox" data-layer="evacuation" checked />
+                  <span>Evacuation Corridors</span>
+                </label>
+              </div>
+
+              <!-- Legend -->
+              <div class="map-legend-box">
+                <h4>Map Legend</h4>
+                <div class="legend-item">
+                  <span class="legend-color-box" style="background: rgba(56, 189, 248, 0.75);"></span>
+                  <span>Inundation / Water Extent</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color-box" style="background: rgba(239, 68, 68, 0.75);"></span>
+                  <span>Active Wildfire / Severe Damage</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color-box" style="background: #22c55e;"></span>
+                  <span>Safe Evacuation Corridor</span>
+                </div>
+                <div class="legend-item">
+                  <span style="font-size: 0.9rem;">🏥 🛣️ ⚡ 🌉 🏕️</span>
+                  <span>Facilities (Click for details)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Critical Infrastructure Table -->
+          <div class="infra-table-wrap">
+            <h4 style="font-size: 1.05rem; margin-bottom: 0.75rem;">Critical Infrastructure Damage Assessment</h4>
+            <table class="infra-table">
+              <thead>
+                <tr>
+                  <th>Facility Name</th>
+                  <th>Classification</th>
+                  <th>Operational Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="infrastructureTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Emergency Action Checklist -->
+          <div class="emergency-actions-card">
+            <h4 style="font-size: 1.05rem; color: var(--accent-cyan);">Recommended Emergency Civil Defense Actions</h4>
+            <ul id="emergencyActionsList" class="emergency-actions-list"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: METHODOLOGY & SCIENCE -->
+    <section id="methodology" class="content-section hidden">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">📚 Remote Sensing Methodology & Mathematical Formulations</h2>
+          <p class="section-desc">
+            Technical foundation of satellite-based disaster mapping: multi-spectral band mathematics, microwave SAR penetration, and change-detection algorithms.
+          </p>
+        </div>
+
+        <div id="methodologyCardsGrid" class="methodology-grid"></div>
+
+        <!-- Academic & Hackathon Transparency Notice -->
+        <div class="glass-card" style="margin-top: 3rem; border-color: rgba(234, 179, 8, 0.4);">
+          <div style="display: flex; align-items: flex-start; gap: 1rem;">
+            <div style="font-size: 2rem;">🛡️</div>
+            <div>
+              <h3 style="font-size: 1.2rem; color: var(--alert-yellow); margin-bottom: 0.4rem;">
+                Hackathon Transparency & Model Validation Statement
+              </h3>
+              <p style="font-size: 0.92rem; line-height: 1.6; color: var(--text-muted);">
+                This application is developed as an interactive disaster detection prototype. While the underlying remote sensing indices (NDWI, NBR, dNBR, SAR backscatter $\Delta\sigma^0$) adhere to standard European Space Agency (ESA) and USGS formulations, all scenario damage polygons and telemetry values are rendered as illustrative demonstrations for rapid emergency triage UI/UX evaluation. In live civil defense operations, this interface would ingest calibrated Sentinel API data and validated machine-learning weights.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- INFRASTRUCTURE DETAIL MODAL -->
+  <div id="infraModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalInfraTitle">
+    <div class="modal-card">
+      <button id="closeInfraModalBtn" class="btn-close-modal" aria-label="Close Modal">&times;</button>
+      <div id="infraModalBody"></div>
+    </div>
+  </div>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <a href="#dashboard" class="site-logo">
+            <span class="logo-text">TERRAWATCH</span>
+          </a>
+          <p style="margin: 0.75rem 0 1rem; max-width: 400px; font-size: 0.85rem;">
+            Satellite-Based Hypothetical Disaster Detection & Impact Mapping. Built with HTML5, CSS3, JavaScript, and Web Audio API.
+          </p>
+          <div class="prototype-disclaimer-pill" style="font-size: 0.72rem; margin-bottom: 0;">
+            Demonstration Mode Active • Sentinel & Landsat Specifications
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#dashboard" onclick="document.querySelector('[data-section=\'dashboard\']').click()">Dashboard</a></li>
+            <li><a href="#analysis" onclick="document.querySelector('[data-section=\'analysis\']').click()">Analysis Studio</a></li>
+            <li><a href="#results" onclick="document.querySelector('[data-section=\'results\']').click()">Impact & Mapping</a></li>
+            <li><a href="#methodology" onclick="document.querySelector('[data-section=\'methodology\']').click()">Methodology & Science</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>System Shortcuts</h4>
+          <ul>
+            <li><kbd style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 3px;">Ctrl + K</kbd> Quick Search</li>
+            <li><kbd style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 3px;">Esc</kbd> Close Modals</li>
+            <li><span style="color: var(--accent-cyan);">SITREP</span> Instant Incident Report Download</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 TERRAWATCH Prototype • Satellite-Based Hypothetical Disaster Detection Hackathon Project</div>
+        <div>Ready for Local Execution & Live Presentation</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/stars.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "terrawatch-disaster-mapping",
+  "version": "1.0.0",
+  "description": "Satellite-Based Hypothetical Disaster Detection and Impact Mapping Platform",
+  "private": true,
+  "scripts": {
+    "build": "echo 'TerraWatch static asset bundle ready for deployment'",
+    "start": "python -m http.server 8000"
+  },
+  "keywords": [
+    "satellite",
+    "disaster-detection",
+    "remote-sensing",
+    "impact-mapping",
+    "hackathon",
+    "vercel"
+  ],
+  "author": "TerraWatch Team",
+  "license": "MIT"
+}

@@ -1,0 +1,9 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Deployment & Environment
+.vercel
+node_modules/
+*.log
